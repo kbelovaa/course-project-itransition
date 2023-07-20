@@ -1,0 +1,14 @@
+.comments {
+  &-container {
+    width: 60vw;
+  }
+
+  &-card {
+    background-color: #f0f2f5;
+  }
+
+  &-send-button {
+    width: 4vw;
+    align-self: flex-end;
+  }
+}

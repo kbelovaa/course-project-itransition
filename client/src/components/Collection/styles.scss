@@ -1,0 +1,17 @@
+.collection {
+  &-image {
+    width: 20vw;
+    height: 20vw;
+    border: 1px solid #dcdcdc;
+    margin-right: 0.5vw;
+  }
+
+  &-info {
+    width: 50vw;
+  }
+
+  &-table {
+    width: 70vw;
+    margin-bottom: 2vw;
+  }
+}

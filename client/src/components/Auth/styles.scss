@@ -1,0 +1,17 @@
+.auth {
+  &-container {
+    height: calc(100vh - 70px);
+  }
+
+  &-card {
+    width: 32vw;
+  }
+
+  &-hint {
+    text-align: center;
+  }
+
+  &-link {
+    text-decoration: none;
+  }
+}

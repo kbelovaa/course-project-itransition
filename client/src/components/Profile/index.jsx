@@ -6,9 +6,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Button, ButtonToolbar, Card, Container } from 'react-bootstrap';
 import { IKImage } from 'imagekitio-react';
+import { useTheme } from '../../hooks/useTheme';
 import { setTotalCountCollectionAsync, setCollectionsAsync } from '../../store/actions/collectionActions';
 import { deleteCollection } from '../../http/collectionAPI';
 import { getUser } from '../../http/userAPI';
+import {
+  themeBgLight,
+  themeColorLight,
+  btnThemeVariantPrimary,
+  btnThemeVariantDanger,
+} from '../../constants/themeValues';
 import CollectionModal from '../modals/CollectionModal';
 import Pages from '../Pages';
 import './styles.scss';
@@ -19,6 +26,7 @@ const Profile = () => {
   const [user, setUser] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [editCollection, setEditCollection] = useState(null);
+  const { theme } = useTheme();
 
   const navigate = useNavigate();
   const params = useParams();
@@ -45,17 +53,19 @@ const Profile = () => {
 
   const handleDelete = (id) => {
     deleteCollection(id)
-    .then(() => dispatch(setCollectionsAsync(userId)))
-    .then(() => dispatch(setTotalCountCollectionAsync(userId)));
+      .then(() => dispatch(setCollectionsAsync(userId)))
+      .then(() => dispatch(setTotalCountCollectionAsync(userId)));
   };
 
   return (
-    <Container className="d-flex align-items-center flex-column">
-      <h2 className="m-3">
+    <Container className="container-wrap d-flex align-items-center flex-column">
+      <h2 className={`text-${themeColorLight[theme]} m-3`}>
         {token !== null && userId == token.id ? 'Your' : `${user.name}'s`} collections
       </h2>
       <ButtonToolbar
-        className={token !== null && (token.role === 'ADMIN' || userId == token.id) ? 'profile-button-toolbar' : 'd-none'}
+        className={
+          token !== null && (token.role === 'ADMIN' || userId == token.id) ? 'profile-button-toolbar' : 'd-none'
+        }
       >
         <Button onClick={handleShow} className="m-2" variant="primary">
           Create new <FontAwesomeIcon icon={faPlus} />
@@ -66,8 +76,9 @@ const Profile = () => {
       ) : (
         <div className="mt-2 d-flex flex-wrap">
           {collections.collections.map((collection) => (
-            <Card className="collection-card m-2" key={collection.id}>
+            <Card bg={themeBgLight[theme]} className={`${theme} collection-card m-2`} key={collection.id}>
               <IKImage
+                className="collection-icon"
                 onClick={() => navigate(`/collection/${collection.id}`)}
                 urlEndpoint={urlEndpoint}
                 path={collection.img ?? 'noimage.jpg'}
@@ -78,7 +89,7 @@ const Profile = () => {
                   },
                 ]}
               />
-              <Card.Body onClick={() => navigate(`/collection/${collection.id}`)}>
+              <Card.Body className="collection-body" onClick={() => navigate(`/collection/${collection.id}`)}>
                 <Card.Title>{collection.name}</Card.Title>
                 <Card.Text>
                   {collection.description.length > 90
@@ -87,12 +98,16 @@ const Profile = () => {
                 </Card.Text>
               </Card.Body>
               <Card.Footer
-                className={token !== null && (token.role === 'ADMIN' || userId == token.id) ? 'd-flex justify-content-between' : 'd-none'}
+                className={
+                  token !== null && (token.role === 'ADMIN' || userId == token.id)
+                    ? 'd-flex justify-content-between'
+                    : 'd-none'
+                }
               >
-                <Button variant="outline-primary" onClick={() => handleShowModify(collection.id)}>
+                <Button variant={btnThemeVariantPrimary[theme]} onClick={() => handleShowModify(collection.id)}>
                   Edit
                 </Button>
-                <Button variant="outline-danger" onClick={() => handleDelete(collection.id)}>
+                <Button variant={btnThemeVariantDanger[theme]} onClick={() => handleDelete(collection.id)}>
                   Delete
                 </Button>
               </Card.Footer>

@@ -1,3 +1,9 @@
-.items-table {
-  width: 60vw;
+.item {
+  &-table {
+    width: 60vw;
+  }
+
+  &-row:hover {
+    cursor: pointer;
+  }
 }

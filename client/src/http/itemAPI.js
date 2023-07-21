@@ -11,17 +11,17 @@ export const fetchItems = async (collectionId) => {
 };
 
 export const getItem = async (itemId) => {
-  const { data } = await $host.get('item/' + itemId);
+  const { data } = await $host.get(`item/${itemId}`);
   return data;
 };
 
 export const editItem = async (item, id) => {
-  const { data } = await $authHost.patch('item/edit/' + id, item);
+  const { data } = await $authHost.patch(`item/edit/${id}`, item);
   return data;
 };
 
 export const deleteItem = async (id) => {
-  const { data } = await $authHost.delete('item/delete/' + id);
+  const { data } = await $authHost.delete(`item/delete/${id}`);
   return data;
 };
 

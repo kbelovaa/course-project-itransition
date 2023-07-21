@@ -11,6 +11,6 @@ export const getLike = async (userId, itemId) => {
 };
 
 export const fetchLikes = async (itemId) => {
-  const { data } = await $host.get('like/all/' + itemId);
+  const { data } = await $host.get(`like/all/${itemId}`);
   return data;
 };

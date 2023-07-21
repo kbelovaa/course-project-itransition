@@ -1,0 +1,24 @@
+.theme-switcher {
+  border-radius: 50%;
+  width: 2vw;
+  height: 2vw;
+  padding: 0;
+}
+
+.dark.navbar-title {
+  color: black;
+  transition: all 0.2s ease-out;
+
+  &:hover {
+    color: white;
+  }
+}
+
+.white.navbar-title {
+  color: white;
+  transition: all 0.2s ease-out;
+
+  &:hover {
+    color: rgb(178, 178, 178);
+  }
+}

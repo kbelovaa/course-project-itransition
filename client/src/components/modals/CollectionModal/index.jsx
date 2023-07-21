@@ -6,16 +6,23 @@ import { IKContext, IKUpload } from 'imagekitio-react';
 import { v4 } from 'uuid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { useTheme } from '../../../hooks/useTheme';
 import { createCollection, getCollection, editCollection } from '../../../http/collectionAPI';
 import { setCollectionsAsync, setTotalCountCollectionAsync } from '../../../store/actions/collectionActions';
 import THEMES from '../../../constants/collectionThemes';
+import {
+  themeBgLight,
+  themeColorDark,
+  themeColorLight,
+  btnThemeVariantSecondary,
+} from '../../../constants/themeValues';
 import './styles.scss';
 
 const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [theme, setTheme] = useState('none');
+  const [selectedTheme, setSelectedTheme] = useState('none');
   const [file, setFile] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
@@ -44,6 +51,8 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
   const params = useParams();
   const userId = params.id;
 
+  const { theme } = useTheme();
+
   const urlEndpoint = process.env.REACT_APP_IMAGEKIT_URL_ENDPOINT;
   const publicKey = process.env.REACT_APP_IMAGEKIT_PUBLIC_KEY;
   const authenticationEndpoint = process.env.REACT_APP_API_URL;
@@ -53,7 +62,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
       getCollection(collectionId).then((data) => {
         setName(data.name);
         setDescription(data.description);
-        setTheme(data.theme);
+        setSelectedTheme(data.theme);
         setFile(data.img);
         setCustomFields({
           intChecked: Boolean(data.numberField1 || data.numberField2 || data.numberField3),
@@ -90,7 +99,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
   const clearFields = () => {
     setName('');
     setDescription('');
-    setTheme('none');
+    setSelectedTheme('none');
     setFile(null);
     setCustomFields({
       intChecked: false,
@@ -133,38 +142,43 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
     const textQuantity = customFields.textChecked ? fieldsQuantity.textFields : 0;
     const boolQuantity = customFields.boolChecked ? fieldsQuantity.boolFields : 0;
     const dateQuantity = customFields.dateChecked ? fieldsQuantity.dateFields : 0;
-    const fieldsNamesQuantity = [...intFields, ...stringFields, ...textFields, ...boolFields, ...dateFields].filter((field) => field).length;
+    const fieldsNamesQuantity = [...intFields, ...stringFields, ...textFields, ...boolFields, ...dateFields].filter(
+      (field) => field,
+    ).length;
 
-    if (theme !== 'none' && fieldsNamesQuantity === intQuantity + stringQuantity + textQuantity + boolQuantity + dateQuantity) {
+    if (
+      selectedTheme !== 'none' &&
+      fieldsNamesQuantity === intQuantity + stringQuantity + textQuantity + boolQuantity + dateQuantity
+    ) {
       setShowMessage(false);
       if (collectionId) {
         editCollection(
           {
             name: name[0].toUpperCase() + name.slice(1),
             description: description[0].toUpperCase() + description.slice(1),
-            theme,
+            theme: selectedTheme,
             img: file,
             customFields: JSON.stringify([...intFields, ...stringFields, ...textFields, ...boolFields, ...dateFields]),
           },
-          collectionId
+          collectionId,
         )
-        .then(() => dispatch(setCollectionsAsync(userId)))
-        .then(() => handleClose());
+          .then(() => dispatch(setCollectionsAsync(userId)))
+          .then(() => handleClose());
       } else {
         createCollection({
           name: name[0].toUpperCase() + name.slice(1),
           description: description[0].toUpperCase() + description.slice(1),
-          theme,
+          theme: selectedTheme,
           img: file,
           customFields: JSON.stringify([...intFields, ...stringFields, ...textFields, ...boolFields, ...dateFields]),
           userId,
         })
-        .then(() => dispatch(setCollectionsAsync(userId)))
-        .then(() => dispatch(setTotalCountCollectionAsync(userId)))
-        .then(() => {
-          clearFields();
-          handleClose();
-        });
+          .then(() => dispatch(setCollectionsAsync(userId)))
+          .then(() => dispatch(setTotalCountCollectionAsync(userId)))
+          .then(() => {
+            clearFields();
+            handleClose();
+          });
       }
     } else {
       setShowMessage(true);
@@ -204,39 +218,40 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
 
   const onIntSelectChange = (e) => {
     setFieldsQuantity((state) => ({ ...state, intFields: e.target.value }));
-    setIntFields((state) => state.map((item, index) => index > Number(e.target.value) - 1 ? '' : item));
+    setIntFields((state) => state.map((item, index) => (index > Number(e.target.value) - 1 ? '' : item)));
   };
 
   const onStringSelectChange = (e) => {
     setFieldsQuantity((state) => ({ ...state, stringFields: e.target.value }));
-    setStringFields((state) => state.map((item, index) => index > Number(e.target.value) - 1 ? '' : item));
+    setStringFields((state) => state.map((item, index) => (index > Number(e.target.value) - 1 ? '' : item)));
   };
 
   const onTextSelectChange = (e) => {
     setFieldsQuantity((state) => ({ ...state, textFields: e.target.value }));
-    setTextFields((state) => state.map((item, index) => index > Number(e.target.value) - 1 ? '' : item));
+    setTextFields((state) => state.map((item, index) => (index > Number(e.target.value) - 1 ? '' : item)));
   };
 
   const onBoolSelectChange = (e) => {
     setFieldsQuantity((state) => ({ ...state, boolFields: e.target.value }));
-    setBoolFields((state) => state.map((item, index) => index > Number(e.target.value) - 1 ? '' : item));
+    setBoolFields((state) => state.map((item, index) => (index > Number(e.target.value) - 1 ? '' : item)));
   };
 
   const onDateSelectChange = (e) => {
     setFieldsQuantity((state) => ({ ...state, dateFields: e.target.value }));
-    setDateFields((state) => state.map((item, index) => index > Number(e.target.value) - 1 ? '' : item));
+    setDateFields((state) => state.map((item, index) => (index > Number(e.target.value) - 1 ? '' : item)));
   };
 
   return (
     <Modal size="lg" show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
+      <Modal.Header className={`bg-${themeBgLight[theme]}`} closeButton>
         <Modal.Title>{collectionId ? 'Modify' : 'Create'} collection</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
-        <Modal.Body>
+        <Modal.Body className={`bg-${themeBgLight[theme]}`}>
           <Form.Group className="mb-3" controlId="name">
             <Form.Label>Collection name</Form.Label>
             <Form.Control
+              className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]}`}
               value={name}
               onChange={(e) => setName(e.target.value)}
               type="text"
@@ -247,7 +262,11 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
           </Form.Group>
           <Form.Group className="mb-3" controlId="theme">
             <Form.Label>Collection theme</Form.Label>
-            <Form.Select value={theme} onChange={(e) => setTheme(e.target.value)}>
+            <Form.Select
+              className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]}`}
+              value={selectedTheme}
+              onChange={(e) => setSelectedTheme(e.target.value)}
+            >
               <option value="none" disabled hidden>
                 Select a theme
               </option>
@@ -262,6 +281,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
           <Form.Group className="mb-3" controlId="description">
             <Form.Label>Collection description</Form.Label>
             <Form.Control
+              className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]}`}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               as="textarea"
@@ -287,7 +307,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                   inputRef={inputFileRef}
                 />
                 {inputFileRef && (
-                  <Button variant="outline-secondary" onClick={() => inputFileRef.current.click()}>
+                  <Button variant={btnThemeVariantSecondary[theme]} onClick={() => inputFileRef.current.click()}>
                     Select a file
                   </Button>
                 )}
@@ -295,7 +315,11 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                   <p className="ms-2 mb-0">
                     File selected
                     <OverlayTrigger placement="right" delay={{ show: 250, hide: 250 }} overlay={renderTooltip}>
-                      <FontAwesomeIcon icon={faXmark} className="ms-1" onClick={() => setFile(null)} />
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        className="modal-form-delete ms-1"
+                        onClick={() => setFile(null)}
+                      />
                     </OverlayTrigger>
                   </p>
                 ) : (
@@ -315,14 +339,12 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                 label="Integer fields"
               />
               <Form.Group as={Row} className={customFields.intChecked ? 'mb-2' : 'd-none'} controlId="intFields">
-                <Form.Label className="modal-form-label me-2">
-                  Fields quantity
-                </Form.Label>
+                <Form.Label className="modal-form-label me-2">Fields quantity</Form.Label>
                 <Form.Select
                   size="sm"
                   value={fieldsQuantity.intFields}
                   onChange={(e) => onIntSelectChange(e)}
-                  className="modal-form-select"
+                  className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]} modal-form-select`}
                 >
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -330,9 +352,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                 </Form.Select>
               </Form.Group>
               <Form.Group as={Row} className={customFields.intChecked ? 'mb-2' : 'd-none'} controlId="intFieldsNames">
-                <Form.Label className="modal-form-label me-2">
-                  Fields names
-                </Form.Label>
+                <Form.Label className="modal-form-label me-2">Fields names</Form.Label>
                 {[...Array(Number(fieldsQuantity.intFields))]
                   .map((_, i) => i)
                   .map((item) => (
@@ -345,7 +365,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                       type="text"
                       placeholder={`Field ${item + 1}`}
                       size="sm"
-                      className="modal-form-control me-2"
+                      className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]} modal-form-control me-2`}
                     />
                   ))}
               </Form.Group>
@@ -359,14 +379,12 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                 label="String fields"
               />
               <Form.Group as={Row} className={customFields.stringChecked ? 'mb-2' : 'd-none'} controlId="stringFields">
-                <Form.Label className="modal-form-label me-2">
-                  Fields quantity
-                </Form.Label>
+                <Form.Label className="modal-form-label me-2">Fields quantity</Form.Label>
                 <Form.Select
                   size="sm"
                   value={fieldsQuantity.stringFields}
                   onChange={(e) => onStringSelectChange(e)}
-                  className="modal-form-select"
+                  className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]} modal-form-select`}
                 >
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -378,9 +396,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                 className={customFields.stringChecked ? 'mb-2' : 'd-none'}
                 controlId="stringFieldsNames"
               >
-                <Form.Label className="modal-form-label me-2">
-                  Fields names
-                </Form.Label>
+                <Form.Label className="modal-form-label me-2">Fields names</Form.Label>
                 {[...Array(Number(fieldsQuantity.stringFields))]
                   .map((_, i) => i)
                   .map((item) => (
@@ -393,7 +409,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                       type="text"
                       placeholder={`Field ${item + 1}`}
                       size="sm"
-                      className="modal-form-control me-2"
+                      className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]} modal-form-control me-2`}
                     />
                   ))}
               </Form.Group>
@@ -407,14 +423,12 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                 label="Text fields"
               />
               <Form.Group as={Row} className={customFields.textChecked ? 'mb-2' : 'd-none'} controlId="textFields">
-                <Form.Label className="modal-form-label me-2">
-                  Fields quantity
-                </Form.Label>
+                <Form.Label className="modal-form-label me-2">Fields quantity</Form.Label>
                 <Form.Select
                   size="sm"
                   value={fieldsQuantity.textFields}
                   onChange={(e) => onTextSelectChange(e)}
-                  className="modal-form-select"
+                  className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]} modal-form-select`}
                 >
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -422,9 +436,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                 </Form.Select>
               </Form.Group>
               <Form.Group as={Row} className={customFields.textChecked ? 'mb-2' : 'd-none'} controlId="textFieldsNames">
-                <Form.Label className="modal-form-label me-2">
-                  Fields names
-                </Form.Label>
+                <Form.Label className="modal-form-label me-2">Fields names</Form.Label>
                 {[...Array(Number(fieldsQuantity.textFields))]
                   .map((_, i) => i)
                   .map((item) => (
@@ -437,7 +449,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                       type="text"
                       placeholder={`Field ${item + 1}`}
                       size="sm"
-                      className="modal-form-control me-2"
+                      className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]} modal-form-control me-2`}
                     />
                   ))}
               </Form.Group>
@@ -451,14 +463,12 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                 label="Logical yes/no fields"
               />
               <Form.Group as={Row} className={customFields.boolChecked ? 'mb-2' : 'd-none'} controlId="boolFields">
-                <Form.Label className="modal-form-label me-2">
-                  Fields quantity
-                </Form.Label>
+                <Form.Label className="modal-form-label me-2">Fields quantity</Form.Label>
                 <Form.Select
                   size="sm"
                   value={fieldsQuantity.boolFields}
                   onChange={(e) => onBoolSelectChange(e)}
-                  className="modal-form-select"
+                  className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]} modal-form-select`}
                 >
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -466,9 +476,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                 </Form.Select>
               </Form.Group>
               <Form.Group as={Row} className={customFields.boolChecked ? 'mb-2' : 'd-none'} controlId="boolFieldsNames">
-                <Form.Label className="modal-form-label me-2">
-                  Fields names
-                </Form.Label>
+                <Form.Label className="modal-form-label me-2">Fields names</Form.Label>
                 {[...Array(Number(fieldsQuantity.boolFields))]
                   .map((_, i) => i)
                   .map((item) => (
@@ -481,7 +489,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                       type="text"
                       placeholder={`Field ${item + 1}`}
                       size="sm"
-                      className="modal-form-control me-2"
+                      className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]} modal-form-control me-2`}
                     />
                   ))}
               </Form.Group>
@@ -495,14 +503,12 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                 label="Date fields"
               />
               <Form.Group as={Row} className={customFields.dateChecked ? 'mb-2' : 'd-none'} controlId="dateFields">
-                <Form.Label className="modal-form-label me-2">
-                  Fields quantity
-                </Form.Label>
+                <Form.Label className="modal-form-label me-2">Fields quantity</Form.Label>
                 <Form.Select
                   size="sm"
                   value={fieldsQuantity.dateFields}
                   onChange={(e) => onDateSelectChange(e)}
-                  className="modal-form-select"
+                  className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]} modal-form-select`}
                 >
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -510,9 +516,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                 </Form.Select>
               </Form.Group>
               <Form.Group as={Row} className={customFields.dateChecked ? 'mb-2' : 'd-none'} controlId="dateFieldsNames">
-                <Form.Label className="modal-form-label me-2">
-                  Fields names
-                </Form.Label>
+                <Form.Label className="modal-form-label me-2">Fields names</Form.Label>
                 {[...Array(Number(fieldsQuantity.dateFields))]
                   .map((_, i) => i)
                   .map((item) => (
@@ -525,18 +529,18 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
                       type="text"
                       placeholder={`Field ${item + 1}`}
                       size="sm"
-                      className="modal-form-control me-2"
+                      className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]} modal-form-control me-2`}
                     />
                   ))}
               </Form.Group>
             </Form.Group>
           </Form.Group>
         </Modal.Body>
-        <Modal.Footer>
-          <Form.Text id="message" className={showMessage ? "text-danger" : "d-none"}>
+        <Modal.Footer className={`bg-${themeBgLight[theme]}`}>
+          <Form.Text id="message" className={showMessage ? 'text-danger' : 'd-none'}>
             Fill in all the fields
           </Form.Text>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant={btnThemeVariantSecondary[theme]} onClick={handleClose}>
             Close
           </Button>
           <Button type="submit" variant="primary" disabled={submitDisabled}>

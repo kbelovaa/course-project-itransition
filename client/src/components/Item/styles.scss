@@ -12,3 +12,41 @@
     width: 40vw;
   }
 }
+
+.like {
+  font-size: 2vw;
+  color: #00000030;
+
+  &-available {
+    font-size: 2vw;
+    transition: all 0.2s ease-out;
+  }
+
+  &-available:hover {
+    cursor: pointer;
+  }
+
+  &-active {
+    color: #dc3545;
+  }
+
+  &-active:hover {
+    color: #a52734;
+  }
+
+  &-not-active.light {
+    color: #00000030;
+  }
+
+  &-not-active.light:hover {
+    color: #2719198f;
+  }
+
+  &-not-active.dark {
+    color: #b8b8b830;
+  }
+
+  &-not-active.dark:hover {
+    color: #c374745c;
+  }
+}

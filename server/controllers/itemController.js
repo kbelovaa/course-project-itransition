@@ -1,30 +1,54 @@
-const {Item, Tag, ItemTag, Collection, User} = require('../models/models');
+const { Item, Tag, ItemTag, Collection, User } = require('../models/models');
 const ApiError = require('../error/ApiError');
 
 class ItemController {
   async create(req, res, next) {
     try {
-      let {name, customFields, tags, collectionId} = req.body;
+      let { name, customFields, tags, collectionId } = req.body;
       customFields = JSON.parse(customFields);
       tags = JSON.parse(tags);
       const [
-        numberField1, numberField2, numberField3,
-        stringField1, stringField2, stringField3,
-        textField1, textField2, textField3,
-        booleanField1, booleanField2, booleanField3,
-        dateField1, dateField2, dateField3
-      ] = customFields.map(item => item === '' ? null : item);
-      const item = await Item.create({name,
-        numberField1, numberField2, numberField3,
-        stringField1, stringField2, stringField3,
-        textField1, textField2, textField3,
-        booleanField1, booleanField2, booleanField3,
-        dateField1, dateField2, dateField3,
-        collectionId})
+        numberField1,
+        numberField2,
+        numberField3,
+        stringField1,
+        stringField2,
+        stringField3,
+        textField1,
+        textField2,
+        textField3,
+        booleanField1,
+        booleanField2,
+        booleanField3,
+        dateField1,
+        dateField2,
+        dateField3,
+      ] = customFields.map((item) => (item === '' ? null : item));
+      const item = await Item.create({
+        name,
+        numberField1,
+        numberField2,
+        numberField3,
+        stringField1,
+        stringField2,
+        stringField3,
+        textField1,
+        textField2,
+        textField3,
+        booleanField1,
+        booleanField2,
+        booleanField3,
+        dateField1,
+        dateField2,
+        dateField3,
+        collectionId,
+      });
       tags.forEach((tag) => {
-        Tag.findOrCreate({ where: { name: tag }})
-        .then(() => Tag.findOne({ where: { name: tag }}))
-        .then((dbTag) => ItemTag.findOrCreate({ where: { tagId: dbTag.id, itemId: item.id }}))
+        Tag.findOrCreate({ where: { name: tag } })
+          .then(() => Tag.findOne({ where: { name: tag } }))
+          .then((dbTag) => ItemTag.findOrCreate({
+            where: { tagId: dbTag.id, itemId: item.id },
+          }));
       });
       return res.status(200).json(item);
     } catch (e) {
@@ -33,55 +57,89 @@ class ItemController {
   }
 
   async delete(req, res) {
-    const {id} = req.params;
-    const result = await Item.destroy({where: {id}});
+    const { id } = req.params;
+    const result = await Item.destroy({ where: { id } });
     return res.status(200).json(result);
   }
 
   async getAllForCollection(req, res) {
-    let {collectionId} = req.query;
-    const items = await Item.findAll({where: {collectionId}, order: ['id'], include: Tag});
+    const { collectionId } = req.query;
+    const items = await Item.findAll({
+      where: { collectionId },
+      order: ['id'],
+      include: Tag,
+    });
     return res.status(200).json(items);
   }
 
   async getOne(req, res) {
-    const {id} = req.params;
-    const item = await Item.findOne({where: {id}});
-    const tags = await item.getTags({order: ['id']});
-    return res.status(200).json({item, tags});
+    const { id } = req.params;
+    const item = await Item.findOne({ where: { id } });
+    const tags = await item.getTags({ order: ['id'] });
+    return res.status(200).json({ item, tags });
   }
 
   async edit(req, res) {
-    let {name, customFields, tags} = req.body;
+    let { name, customFields, tags } = req.body;
     customFields = JSON.parse(customFields);
     tags = JSON.parse(tags);
-    const {id} = req.params;
+    const { id } = req.params;
     const [
-      numberField1, numberField2, numberField3,
-      stringField1, stringField2, stringField3,
-      textField1, textField2, textField3,
-      booleanField1, booleanField2, booleanField3,
-      dateField1, dateField2, dateField3
-    ] = customFields.map(item => item === '' ? null : item);
-    const result = await Item.update({name,
-      numberField1, numberField2, numberField3,
-      stringField1, stringField2, stringField3,
-      textField1, textField2, textField3,
-      booleanField1, booleanField2, booleanField3,
-      dateField1, dateField2, dateField3,}, {where: {id}});
-    await ItemTag.destroy({where: {itemId: id}})
-    .then(() => tags.forEach((tag) => {
-      Tag.findOrCreate({ where: { name: tag }})
-      .then(() => Tag.findOne({ where: { name: tag }}))
-      .then((dbTag) => ItemTag.findOrCreate({ where: { tagId: dbTag.id, itemId: id }}))
-    }));
+      numberField1,
+      numberField2,
+      numberField3,
+      stringField1,
+      stringField2,
+      stringField3,
+      textField1,
+      textField2,
+      textField3,
+      booleanField1,
+      booleanField2,
+      booleanField3,
+      dateField1,
+      dateField2,
+      dateField3,
+    ] = customFields.map((item) => (item === '' ? null : item));
+    const result = await Item.update(
+      {
+        name,
+        numberField1,
+        numberField2,
+        numberField3,
+        stringField1,
+        stringField2,
+        stringField3,
+        textField1,
+        textField2,
+        textField3,
+        booleanField1,
+        booleanField2,
+        booleanField3,
+        dateField1,
+        dateField2,
+        dateField3,
+      },
+      { where: { id } }
+    );
+    await ItemTag.destroy({ where: { itemId: id } }).then(() =>
+      tags.forEach((tag) => {
+        Tag.findOrCreate({ where: { name: tag } })
+          .then(() => Tag.findOne({ where: { name: tag } }))
+          .then((dbTag) => ItemTag.findOrCreate({ where: { tagId: dbTag.id, itemId: id } }));
+      })
+    );
     return res.status(200).json(result);
   }
 
   async getLatest(req, res) {
-    let {limit} = req.query;
+    let { limit } = req.query;
     limit = limit || 5;
-    const items = await Item.findAll({ include: { model: Collection, include: User }, order: [['id', 'DESC']], limit });
+    const items = await Item.findAll({
+      include: { model: Collection, include: User },
+      order: [['id', 'DESC']],
+      limit,
+    });
     return res.status(200).json(items);
   }
 }

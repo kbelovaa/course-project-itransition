@@ -5,9 +5,8 @@ import LargestCollection from '../LargestCollection';
 import TagsCloud from '../TagsCloud';
 
 const Main = () => {
-
   return (
-    <Container className="d-flex align-items-center flex-column">
+    <Container className="container-wrap d-flex align-items-center flex-column">
       <TagsCloud />
       <LatestItems />
       <LargestCollection />

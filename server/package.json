@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "prettier": "prettier --write controllers/ error/ middleware/ models/ routes/ db.js index.js",
+    "lint": "eslint controllers/ error/ middleware/ models/ routes/ db.js index.js"
   },
   "author": "",
   "license": "ISC",

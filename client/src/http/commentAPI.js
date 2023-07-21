@@ -6,11 +6,11 @@ export const createComment = async (text, userId, itemId) => {
 };
 
 export const fetchComments = async (itemId) => {
-  const { data } = await $host.get('comment/all/' + itemId);
+  const { data } = await $host.get(`comment/all/${itemId}`);
   return data;
 };
 
 export const deleteComment = async (commentId) => {
-  const { data } = await $authHost.delete('comment/delete/' + commentId);
+  const { data } = await $authHost.delete(`comment/delete/${commentId}`);
   return data;
 };

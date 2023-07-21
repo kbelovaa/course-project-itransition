@@ -1,3 +1,14 @@
-.collection-card {
-  width: 15vw;
+.collection {
+  &-card {
+    width: 15vw;
+  }
+
+  &-number:hover,
+  &-author:hover {
+    cursor: pointer;
+  }
+}
+
+.list-group-item {
+  border-color: #0000002d;
 }

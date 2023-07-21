@@ -14,4 +14,16 @@
     width: 70vw;
     margin-bottom: 2vw;
   }
+
+  &-author:hover {
+    cursor: pointer;
+  }
+}
+
+.filter-table.dark {
+  background-color: #6c757d;
+}
+
+.dark .accordion-button {
+  background-color: #6c757d;
 }

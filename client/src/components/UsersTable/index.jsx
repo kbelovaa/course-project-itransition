@@ -5,10 +5,12 @@ import jwt_decode from 'jwt-decode';
 import { Button, ButtonToolbar, Container, OverlayTrigger, Table, Tooltip } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faUnlock, faUserXmark, faUserGear, faUser, faImages } from '@fortawesome/free-solid-svg-icons';
+import { useTheme } from '../../hooks/useTheme';
 import { changeStatus, remove, changeRole } from '../../http/userAPI';
 import { setUsersAction, setUsersAsync, setTotalCountTableAsync } from '../../store/actions/tableActions';
 import { setUserAction, setIsAuthAction } from '../../store/actions/userActions';
 import { fetchUsers } from '../../http/userAPI';
+import { themeColorDark } from '../../constants/themeValues';
 import Pages from '../Pages';
 import './styles.scss';
 
@@ -18,6 +20,8 @@ const UsersTable = () => {
   const table = useSelector((state) => state.table);
   const [masterChecked, setMasterChecked] = useState(false);
   const [selectedList, setSelectedList] = useState([]);
+
+  const { theme } = useTheme();
 
   useEffect(() => {
     dispatch(setTotalCountTableAsync());
@@ -68,15 +72,15 @@ const UsersTable = () => {
   const deleteUser = () => {
     if (selectedList.length > 0) {
       remove(selectedList)
-      .then(() => {
-        dispatch(setUsersAsync(table.page, table.limit));
-        dispatch(setTotalCountTableAsync());
-      })
-      .then(() => {
-        if (selectedList.includes(jwt_decode(localStorage.getItem('token')).id)) {
-          logOut();
-        }
-      });
+        .then(() => {
+          dispatch(setUsersAsync(table.page, table.limit));
+          dispatch(setTotalCountTableAsync());
+        })
+        .then(() => {
+          if (selectedList.includes(jwt_decode(localStorage.getItem('token')).id)) {
+            logOut();
+          }
+        });
     }
   };
 
@@ -99,25 +103,29 @@ const UsersTable = () => {
   );
 
   return (
-    <Container className="d-flex align-items-center flex-column">
+    <Container className="container-wrap d-flex align-items-center flex-column">
       <ButtonToolbar className="users-button-toolbar">
-        <Button onClick={() => setStatus('blocked')} className="m-2" variant="secondary">
+        <Button
+          onClick={() => setStatus('blocked')}
+          className={`text-${themeColorDark[theme]} m-2`}
+          variant="secondary"
+        >
           Block <FontAwesomeIcon icon={faLock} />
         </Button>
-        <Button onClick={() => setStatus('active')} className="m-2" variant="secondary">
+        <Button onClick={() => setStatus('active')} className={`text-${themeColorDark[theme]} m-2`} variant="secondary">
           Unblock <FontAwesomeIcon icon={faUnlock} />
         </Button>
-        <Button onClick={deleteUser} className="m-2" variant="secondary">
+        <Button onClick={deleteUser} className={`text-${themeColorDark[theme]} m-2`} variant="secondary">
           Delete <FontAwesomeIcon icon={faUserXmark} />
         </Button>
-        <Button onClick={() => setRole('ADMIN')} className="m-2" variant="secondary">
+        <Button onClick={() => setRole('ADMIN')} className={`text-${themeColorDark[theme]} m-2`} variant="secondary">
           Add to admins <FontAwesomeIcon icon={faUserGear} />
         </Button>
-        <Button onClick={() => setRole('USER')} className="m-2" variant="secondary">
+        <Button onClick={() => setRole('USER')} className={`text-${themeColorDark[theme]} m-2`} variant="secondary">
           Remove from admins <FontAwesomeIcon icon={faUser} />
         </Button>
       </ButtonToolbar>
-      <Table className="users-table mt-3" striped bordered hover>
+      <Table variant={theme} className="users-table mt-3" striped bordered hover>
         <thead>
           <tr>
             <th className="text-center">

@@ -1,3 +1,29 @@
 .profile-button-toolbar {
   width: 80vw;
 }
+
+.collection {
+  &-icon:hover {
+    cursor: pointer;
+  }
+
+  &-body:hover {
+    cursor: pointer;
+  }
+
+  &-card {
+    transition: all 0.2s ease-out;
+
+    &.light {
+      &:hover {
+        box-shadow: 0px 0px 15px 0px #2f2648;
+      }
+    }
+
+    &.dark {
+      &:hover {
+        box-shadow: 0px 0px 15px 0px #0b5ed7;
+      }
+    }
+  }
+}

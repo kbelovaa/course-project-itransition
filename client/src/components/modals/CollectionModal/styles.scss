@@ -10,4 +10,13 @@
   &-select {
     width: 5vw;
   }
+
+  &-delete {
+    transition: all 0.2s ease-out;
+
+    &:hover {
+      cursor: pointer;
+      color: #dc3545;
+    }
+  }
 }

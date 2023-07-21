@@ -36,7 +36,7 @@ const Pages = ({ component }) => {
   return (
     <Pagination className="mt-3">
       {pages.map((page) => (
-        <Pagination.Item key={page} active={elem.page === page} onClick={(page) => handleClick(page)}>
+        <Pagination.Item key={page} active={elem.page === page} onClick={() => handleClick(page)}>
           {page}
         </Pagination.Item>
       ))}

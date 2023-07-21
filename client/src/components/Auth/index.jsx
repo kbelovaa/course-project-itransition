@@ -5,9 +5,11 @@ import { Container } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { useTheme } from '../../hooks/useTheme';
 import { login, registration } from '../../http/authAPI';
 import { getUser } from '../../http/userAPI';
 import { setUserAction, setIsAuthAction } from '../../store/actions/userActions';
+import { themeBgLight, btnThemeVariantPrimary, themeColorDark, themeColorLight } from '../../constants/themeValues';
 import './styles.scss';
 
 const Auth = () => {
@@ -16,6 +18,7 @@ const Auth = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { theme } = useTheme();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -40,8 +43,8 @@ const Auth = () => {
   };
 
   return (
-    <Container className="auth-container d-flex justify-content-center align-items-center">
-      <Card className="auth-card p-5">
+    <Container className="container-wrap d-flex justify-content-center align-items-center">
+      <Card className={`bg-${themeBgLight[theme]} auth-card p-5`}>
         <h2 className="m-auto">{isLogin ? 'Authorization' : 'Registration'}</h2>
         <Form onSubmit={handleSubmit} className="d-flex flex-column">
           {isLogin ? (
@@ -50,7 +53,7 @@ const Auth = () => {
             <Form.Control
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-3"
+              className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]} mt-3`}
               type="text"
               placeholder="Enter your name"
               required
@@ -59,7 +62,7 @@ const Auth = () => {
           <Form.Control
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-3"
+            className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]} mt-3`}
             type="email"
             placeholder="Enter your e-mail"
             required
@@ -67,7 +70,7 @@ const Auth = () => {
           <Form.Control
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-3"
+            className={`bg-${themeColorDark[theme]} text-${themeColorLight[theme]} mt-3`}
             type="password"
             placeholder="Enter your password"
             aria-describedby="message"
@@ -76,7 +79,7 @@ const Auth = () => {
           <Form.Text id="message" className="text-danger">
             {message}
           </Form.Text>
-          <Button type="submit" className="mt-3 mb-3" variant="outline-primary">
+          <Button type="submit" className="mt-3 mb-3" variant={btnThemeVariantPrimary[theme]}>
             {isLogin ? 'Log in' : 'Register'}
           </Button>
           {isLogin ? (

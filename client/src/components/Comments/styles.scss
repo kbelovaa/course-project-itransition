@@ -11,4 +11,17 @@
     width: 4vw;
     align-self: flex-end;
   }
+
+  &-author:hover {
+    cursor: pointer;
+  }
+
+  &-delete {
+    transition: all 0.2s ease-out;
+
+    &:hover {
+      cursor: pointer;
+      color: #dc3545;
+    }
+  }
 }

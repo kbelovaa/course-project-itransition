@@ -6,7 +6,7 @@ export const fetchUsers = async (page, limit = 10) => {
 };
 
 export const getUser = async (id) => {
-  const { data } = await $host.get('user/' + id);
+  const { data } = await $host.get(`user/${id}`);
   return data;
 };
 
@@ -21,6 +21,6 @@ export const changeRole = async (id, role) => {
 };
 
 export const remove = async (id) => {
-  const { data } = await $authHost.delete('user/delete/' + id);
+  const { data } = await $authHost.delete(`user/delete/${id}`);
   return data;
 };

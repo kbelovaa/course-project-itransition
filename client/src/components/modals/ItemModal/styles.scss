@@ -1,0 +1,21 @@
+.dark .rti--container {
+  background-color: #212529;
+}
+
+.dark .rti--input {
+  background-color: #212529;
+  color: white;
+
+  &::placeholder {
+    color: white;
+    opacity: 1;
+  }
+
+  &:-ms-input-placeholder {
+    color: white;
+  }
+
+  &::-ms-input-placeholder {
+    color: white;
+  }
+}

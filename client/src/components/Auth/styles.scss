@@ -1,8 +1,8 @@
-.auth {
-  &-container {
-    height: calc(100vh - 70px);
-  }
+.container-wrap {
+  min-height: calc(100vh - 70px);
+}
 
+.auth {
   &-card {
     width: 32vw;
   }
@@ -13,5 +13,33 @@
 
   &-link {
     text-decoration: none;
+  }
+}
+
+.text {
+  &-dark::placeholder {
+    color: black;
+    opacity: 1;
+  }
+
+  &-dark:-ms-input-placeholder {
+    color: black;
+  }
+
+  &-dark::-ms-input-placeholder {
+    color: black;
+  }
+
+  &-white::placeholder {
+    color: white;
+    opacity: 1;
+  }
+
+  &-white:-ms-input-placeholder {
+    color: white;
+  }
+
+  &-white::-ms-input-placeholder {
+    color: white;
   }
 }

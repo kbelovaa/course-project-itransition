@@ -11,17 +11,17 @@ export const fetchCollections = async (userId, page, limit = 10) => {
 };
 
 export const getCollection = async (collectionId) => {
-  const { data } = await $host.get('collection/' + collectionId);
+  const { data } = await $host.get(`collection/${collectionId}`);
   return data;
 };
 
 export const editCollection = async (collection, id) => {
-  const { data } = await $authHost.patch('collection/edit/' + id, collection);
+  const { data } = await $authHost.patch(`collection/edit/${id}`, collection);
   return data;
 };
 
 export const deleteCollection = async (id) => {
-  const { data } = await $authHost.delete('collection/delete/' + id);
+  const { data } = await $authHost.delete(`collection/delete/${id}`);
   return data;
 };
 

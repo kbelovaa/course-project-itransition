@@ -17,29 +17,16 @@
 }
 
 .text {
-  &-dark::placeholder {
-    color: black;
-    opacity: 1;
-  }
-
-  &-dark:-ms-input-placeholder {
-    color: black;
-  }
-
-  &-dark::-ms-input-placeholder {
-    color: black;
-  }
-
   &-white::placeholder {
-    color: white;
+    color: rgb(169, 169, 169);
     opacity: 1;
   }
 
   &-white:-ms-input-placeholder {
-    color: white;
+    color: rgb(169, 169, 169);
   }
 
   &-white::-ms-input-placeholder {
-    color: white;
+    color: rgb(169, 169, 169);
   }
 }

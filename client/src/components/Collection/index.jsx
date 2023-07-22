@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
@@ -7,6 +7,7 @@ import { IKImage } from 'imagekitio-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faXmark, faPen, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import { MaterialReactTable } from 'material-react-table';
+import { createTheme, ThemeProvider } from '@mui/material';
 import { useTheme } from '../../hooks/useTheme';
 import { getCollection, deleteCollection } from '../../http/collectionAPI';
 import { getUser } from '../../http/userAPI';
@@ -37,6 +38,22 @@ const Collection = () => {
   const token = localStorage.getItem('token') ? jwt_decode(localStorage.getItem('token')) : null;
 
   const urlEndpoint = process.env.REACT_APP_IMAGEKIT_URL_ENDPOINT;
+
+  const tableTheme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: theme,
+          background: {
+            default:
+              theme === 'light'
+                ? '#fff'
+                : '#474b4f',
+          },
+        },
+      }),
+    [theme],
+  );
 
   useEffect(() => {
     getCollection(collectionId).then((data) => {
@@ -140,7 +157,7 @@ const Collection = () => {
             </Accordion.Item>
             <Accordion.Item eventKey="1">
               <Accordion.Header className={theme}>Description</Accordion.Header>
-              <Accordion.Body className={`bg-${themeBgLight[theme]}`}>{collection.description}</Accordion.Body>
+              <Accordion.Body className={`bg-${themeBgLight[theme]}`}><pre>{collection.description}</pre></Accordion.Body>
             </Accordion.Item>
             <Accordion.Item
               eventKey="2"
@@ -178,49 +195,50 @@ const Collection = () => {
         <div className="collection-table">
           <h3 className={`text-${themeColorLight[theme]} m-3 text-center`}>Collection items</h3>
           {columns[0] && (
-            <MaterialReactTable
-              className={`${theme} filter-table`}
-              columns={columns}
-              data={items.items}
-              enableFacetedValues
-              initialState={{ showColumnFilters: true }}
-              enableRowActions
-              positionActionsColumn="last"
-              renderRowActions={({ row }) => (
-                <div className="d-flex">
-                  <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 250 }} overlay={renderItemTooltip}>
-                    <Button
-                      onClick={() => navigate(`/item/${items.items[row.index].id}`)}
-                      variant="primary"
-                      size="sm"
-                      className="m-1"
-                    >
-                      <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-                    </Button>
-                  </OverlayTrigger>
-                  <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 250 }} overlay={renderModifyTooltip}>
-                    <Button
-                      className={token !== null && (token.role === 'ADMIN' || user.id == token.id) ? 'm-1' : 'd-none'}
-                      onClick={() => handleShowModifyItem(row.index)}
-                      variant="secondary"
-                      size="sm"
-                    >
-                      <FontAwesomeIcon icon={faPen} />
-                    </Button>
-                  </OverlayTrigger>
-                  <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 250 }} overlay={renderDeleteTooltip}>
-                    <Button
-                      className={token !== null && (token.role === 'ADMIN' || user.id == token.id) ? 'm-1' : 'd-none'}
-                      onClick={() => handleDeleteItem(row.index)}
-                      variant="danger"
-                      size="sm"
-                    >
-                      <FontAwesomeIcon icon={faXmark} />
-                    </Button>
-                  </OverlayTrigger>
-                </div>
-              )}
-            />
+            <ThemeProvider theme={tableTheme}>
+              <MaterialReactTable
+                columns={columns}
+                data={items.items}
+                enableFacetedValues
+                initialState={{ showColumnFilters: true }}
+                enableRowActions
+                positionActionsColumn="last"
+                renderRowActions={({ row }) => (
+                  <div className="d-flex">
+                    <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 250 }} overlay={renderItemTooltip}>
+                      <Button
+                        onClick={() => navigate(`/item/${items.items[row.index].id}`)}
+                        variant="primary"
+                        size="sm"
+                        className="m-1"
+                      >
+                        <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                      </Button>
+                    </OverlayTrigger>
+                    <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 250 }} overlay={renderModifyTooltip}>
+                      <Button
+                        className={token !== null && (token.role === 'ADMIN' || user.id == token.id) ? 'm-1' : 'd-none'}
+                        onClick={() => handleShowModifyItem(row.index)}
+                        variant="secondary"
+                        size="sm"
+                      >
+                        <FontAwesomeIcon icon={faPen} />
+                      </Button>
+                    </OverlayTrigger>
+                    <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 250 }} overlay={renderDeleteTooltip}>
+                      <Button
+                        className={token !== null && (token.role === 'ADMIN' || user.id == token.id) ? 'm-1' : 'd-none'}
+                        onClick={() => handleDeleteItem(row.index)}
+                        variant="danger"
+                        size="sm"
+                      >
+                        <FontAwesomeIcon icon={faXmark} />
+                      </Button>
+                    </OverlayTrigger>
+                  </div>
+                )}
+              />
+            </ThemeProvider>
           )}
         </div>
       )}

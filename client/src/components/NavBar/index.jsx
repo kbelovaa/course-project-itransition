@@ -27,7 +27,7 @@ const NavBar = () => {
 
   const handleThemeSwitch = () => {
     setTheme(theme);
-    localStorage.setItem('theme', theme);
+    localStorage.setItem('theme', theme === 'dark' ? 'light' : 'dark');
   };
 
   return (
@@ -56,7 +56,7 @@ const NavBar = () => {
         </Nav>
       ) : (
         <Nav className="align-items-center">
-          <Button onClick={() => setTheme(theme)} variant={navBarThemeVariant[theme]} className="theme-switcher m-2">
+          <Button onClick={handleThemeSwitch} variant={navBarThemeVariant[theme]} className="theme-switcher m-2">
             <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} />
           </Button>
           <Button className="m-2" variant={navBarThemeVariant[theme]} onClick={() => navigate('/registration')}>

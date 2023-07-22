@@ -26,9 +26,7 @@ const App = () => {
       dispatch(setIsAuthAction(true));
     }
     if (userTheme === 'dark') {
-      setTheme('dark');
-    } else if (userTheme === 'light') {
-      setTheme('light');
+      setTheme(theme);
     }
   }, []);
 

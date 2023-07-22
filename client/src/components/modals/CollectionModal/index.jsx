@@ -137,11 +137,11 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const intQuantity = customFields.intChecked ? fieldsQuantity.intFields : 0;
-    const stringQuantity = customFields.stringChecked ? fieldsQuantity.stringFields : 0;
-    const textQuantity = customFields.textChecked ? fieldsQuantity.textFields : 0;
-    const boolQuantity = customFields.boolChecked ? fieldsQuantity.boolFields : 0;
-    const dateQuantity = customFields.dateChecked ? fieldsQuantity.dateFields : 0;
+    const intQuantity = customFields.intChecked ? Number(fieldsQuantity.intFields) : 0;
+    const stringQuantity = customFields.stringChecked ? Number(fieldsQuantity.stringFields) : 0;
+    const textQuantity = customFields.textChecked ? Number(fieldsQuantity.textFields) : 0;
+    const boolQuantity = customFields.boolChecked ? Number(fieldsQuantity.boolFields) : 0;
+    const dateQuantity = customFields.dateChecked ? Number(fieldsQuantity.dateFields) : 0;
     const fieldsNamesQuantity = [...intFields, ...stringFields, ...textFields, ...boolFields, ...dateFields].filter(
       (field) => field,
     ).length;
@@ -289,6 +289,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
               placeholder="Description..."
               rows={3}
               required
+              style={{whiteSpace: 'break-spaces'}}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="image">

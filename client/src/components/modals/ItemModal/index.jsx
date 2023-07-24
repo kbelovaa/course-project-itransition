@@ -18,6 +18,7 @@ import { fetchAllTags } from '../../../http/tagAPI';
 const ItemModal = ({ show, setShow, itemId, setEditItem, collectionId }) => {
   const dispatch = useDispatch();
   const collections = useSelector((state) => state.collection);
+  const items = useSelector((state) => state.item);
 
   const [collection, setCollection] = useState({});
   const [name, setName] = useState('');
@@ -48,8 +49,11 @@ const ItemModal = ({ show, setShow, itemId, setEditItem, collectionId }) => {
         setDateFields([data.dateField1 ?? '', data.dateField2 ?? '', data.dateField3 ?? '']);
       });
     }
-    fetchAllTags().then((data) => setAllTags(data));
   }, [collections, collectionId]);
+
+  useEffect(() => {
+    fetchAllTags().then((data) => setAllTags(data));
+  }, [items]);
 
   useEffect(() => {
     if (itemId) {

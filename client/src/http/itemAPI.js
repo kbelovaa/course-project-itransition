@@ -29,3 +29,8 @@ export const getLatestItems = async (limit) => {
   const { data } = await $host.get('item/latest', { params: { limit } });
   return data;
 };
+
+export const getItemsByTag = async (tagId) => {
+  const { data } = await $host.get('item/bytag', { params: { tagId } });
+  return data;
+};

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
+import ReactMarkdown from 'react-markdown';
 import { Accordion, Button, ButtonToolbar, Container, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { IKImage } from 'imagekitio-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -45,10 +46,7 @@ const Collection = () => {
         palette: {
           mode: theme,
           background: {
-            default:
-              theme === 'light'
-                ? '#fff'
-                : '#474b4f',
+            default: theme === 'light' ? '#fff' : '#474b4f',
           },
         },
       }),
@@ -72,7 +70,12 @@ const Collection = () => {
           accessorKey: key,
           header: value[0].toUpperCase() + value.slice(1),
           filterVariant: 'text',
-          Cell: ({ cell }) => (key.includes('date') ? new Date(cell.getValue()).toLocaleDateString() : cell.getValue()),
+          Cell: ({ cell }) =>
+            cell.getValue() === null
+              ? '—'
+              : key.includes('date')
+              ? new Date(cell.getValue()).toLocaleDateString()
+              : cell.getValue(),
         }));
         setColumns(col);
       }
@@ -157,7 +160,9 @@ const Collection = () => {
             </Accordion.Item>
             <Accordion.Item eventKey="1">
               <Accordion.Header className={theme}>Description</Accordion.Header>
-              <Accordion.Body className={`bg-${themeBgLight[theme]}`}><pre>{collection.description}</pre></Accordion.Body>
+              <Accordion.Body className={`bg-${themeBgLight[theme]}`}>
+                <ReactMarkdown>{collection.description}</ReactMarkdown>
+              </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item
               eventKey="2"
@@ -177,13 +182,13 @@ const Collection = () => {
             </Accordion.Item>
           </Accordion>
           <ButtonToolbar className={token !== null && (token.role === 'ADMIN' || user.id == token.id) ? '' : 'd-none'}>
-            <Button onClick={handleShowItemModal} className="m-2" variant="primary">
+            <Button onClick={handleShowItemModal} className="m-1" variant="primary">
               Add item <FontAwesomeIcon icon={faPlus} />
             </Button>
-            <Button onClick={() => handleShowModifyCollection(collection.id)} className="m-2" variant="secondary">
+            <Button onClick={() => handleShowModifyCollection(collection.id)} className="m-1" variant="secondary">
               Edit <FontAwesomeIcon icon={faPen} />
             </Button>
-            <Button onClick={() => handleDeleteCollection(collection.id)} className="m-2" variant="danger">
+            <Button onClick={() => handleDeleteCollection(collection.id)} className="m-1" variant="danger">
               Delete <FontAwesomeIcon icon={faXmark} />
             </Button>
           </ButtonToolbar>
@@ -202,7 +207,6 @@ const Collection = () => {
                 enableFacetedValues
                 initialState={{ showColumnFilters: true }}
                 enableRowActions
-                positionActionsColumn="last"
                 renderRowActions={({ row }) => (
                   <div className="d-flex">
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 250 }} overlay={renderItemTooltip}>

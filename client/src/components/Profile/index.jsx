@@ -74,9 +74,9 @@ const Profile = () => {
       {collections.collections.length === 0 ? (
         <h4 className="mt-5">There are no collections</h4>
       ) : (
-        <div className="mt-2 d-flex flex-wrap">
+        <div className="mt-2 d-flex flex-wrap justify-content-center collection-wrap">
           {collections.collections.map((collection) => (
-            <Card bg={themeBgLight[theme]} className={`${theme} collection-card m-2`} key={collection.id}>
+            <Card bg={themeBgLight[theme]} className={`${theme} collection-card`} key={collection.id}>
               <IKImage
                 className="collection-icon"
                 onClick={() => navigate(`/collection/${collection.id}`)}
@@ -91,11 +91,6 @@ const Profile = () => {
               />
               <Card.Body className="collection-body" onClick={() => navigate(`/collection/${collection.id}`)}>
                 <Card.Title>{collection.name}</Card.Title>
-                <Card.Text>
-                  {collection.description.length > 90
-                    ? collection.description.slice(0, 90) + '...'
-                    : collection.description}
-                </Card.Text>
               </Card.Body>
               <Card.Footer
                 className={

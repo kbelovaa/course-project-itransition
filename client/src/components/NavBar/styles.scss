@@ -1,24 +1,31 @@
 .theme-switcher {
   border-radius: 50%;
-  width: 2vw;
-  height: 2vw;
-  padding: 0;
 }
 
-.dark.navbar-title {
-  color: black;
+.navbar-title {
   transition: all 0.2s ease-out;
 
-  &:hover {
-    color: white;
+  &.dark {
+    color: black;
+
+    &:hover {
+      color: white;
+    }
   }
-}
 
-.white.navbar-title {
-  color: white;
-  transition: all 0.2s ease-out;
+  &.white {
+    color: white;
 
-  &:hover {
-    color: rgb(178, 178, 178);
+    &:hover {
+      color: rgb(178, 178, 178);
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    font-size: 1rem;
+  }
+
+  @media screen and (max-width: 576px) {
+    font-size: 0.875rem;
   }
 }

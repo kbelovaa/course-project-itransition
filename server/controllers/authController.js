@@ -47,10 +47,10 @@ class AuthController {
   async check(req, res, next) {
     const user = await User.findOne({ where: { id: req.user.id } });
     if (!user) {
-      return next(ApiError.internal('User is deleted and cannot log in'));
+      return res.json({ message: 'deleted' });
     }
     if (user.status === 'blocked') {
-      return next(ApiError.internal('User is blocked and cannot log in'));
+      return res.json({ message: 'blocked' });
     }
     const token = generateJwt(req.user.id, req.user.email, req.user.role);
     return res.status(200).json({ token });

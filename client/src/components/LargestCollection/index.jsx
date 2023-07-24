@@ -27,12 +27,12 @@ const LargestCollection = () => {
   return (
     <Container className="d-flex align-items-center flex-column mb-5">
       <h2 className={`text-${themeColorLight[theme]} mt-5`}>Top 5 biggest collections</h2>
-      <div className="mt-2 d-flex flex-wrap">
+      <div className="mt-2 d-flex flex-wrap justify-content-center collection-wrap">
         {collections.map((collection) => (
           <Card
             bg={themeBgLight[theme]}
             onClick={() => navigate(`/collection/${collection.collection.id}`)}
-            className={`${theme} collection-card m-2`}
+            className={`${theme} collection-card`}
             key={collection.collection.id}
           >
             <IKImage
@@ -47,16 +47,11 @@ const LargestCollection = () => {
               ]}
             />
             <Card.Body className="collection-body">
-              <Card.Title>{collection.collection.name}</Card.Title>
-              <Card.Text>
-                {collection.collection.description.length > 90
-                  ? collection.collection.description.slice(0, 90) + '...'
-                  : collection.collection.description}
-              </Card.Text>
+              <Card.Title className="collection-name">{collection.collection.name}</Card.Title>
             </Card.Body>
             <ListGroup className="list-group-flush">
               <ListGroup.Item className={`bg-${themeBgLight[theme]} collection-number`}>
-                {collection.itemsCount} items
+                Items number: {collection.itemsCount}
               </ListGroup.Item>
               <ListGroup.Item className={`bg-${themeBgLight[theme]} collection-author`}>
                 Author: {users.filter((user) => user.id === collection.collection.userId)[0].name}

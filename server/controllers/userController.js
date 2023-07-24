@@ -1,4 +1,4 @@
-const { User } = require('../models/models');
+const { User, Collection, Item, Like, Comment } = require('../models/models');
 
 class UserController {
   async getAll(req, res) {
@@ -30,6 +30,11 @@ class UserController {
 
   async delete(req, res) {
     const { id } = req.params;
+    const result1 = await Comment.destroy({ where: { userId: id } });
+    const result2 = await Like.destroy({ where: { userId: id } });
+    const collections = await Collection.findAll({ where: { userId: id } });
+    collections.forEach(async (collection) => await Item.destroy({ where: { collectionId: collection.id } }));
+    const result3 = await Collection.destroy({ where: { userId: id } });
     const result = await User.destroy({ where: { id } });
     return res.status(200).json(result);
   }

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form, Modal } from 'react-bootstrap';
-import { TagsInput } from 'react-tag-input-component';
 import { useTheme } from '../../../hooks/useTheme';
 import { getCollection } from '../../../http/collectionAPI';
 import { getItem, createItem, editItem } from '../../../http/itemAPI';
@@ -13,6 +12,8 @@ import {
   btnThemeVariantSecondary,
 } from '../../../constants/themeValues';
 import './styles.scss';
+import { Autocomplete, Chip, TextField } from '@mui/material';
+import { fetchAllTags } from '../../../http/tagAPI';
 
 const ItemModal = ({ show, setShow, itemId, setEditItem, collectionId }) => {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ const ItemModal = ({ show, setShow, itemId, setEditItem, collectionId }) => {
   const [boolFieldsValues, setBoolFieldsValues] = useState([false, false, false]);
   const [dateFieldsValues, setDateFieldsValues] = useState(['', '', '']);
   const [showMessage, setShowMessage] = useState(false);
+  const [allTags, setAllTags] = useState([]);
 
   const { theme } = useTheme();
 
@@ -46,6 +48,7 @@ const ItemModal = ({ show, setShow, itemId, setEditItem, collectionId }) => {
         setDateFields([data.dateField1 ?? '', data.dateField2 ?? '', data.dateField3 ?? '']);
       });
     }
+    fetchAllTags().then((data) => setAllTags(data));
   }, [collections, collectionId]);
 
   useEffect(() => {
@@ -174,9 +177,20 @@ const ItemModal = ({ show, setShow, itemId, setEditItem, collectionId }) => {
               autoFocus
             />
           </Form.Group>
-          <Form.Group className={`${theme} mb-3`} controlId="tags">
+          <Form.Group className="mb-3" controlId="tags">
             <Form.Label>Item tags</Form.Label>
-            <TagsInput value={tags} onChange={setTags} placeHolder="Enter tags" required />
+            <Autocomplete
+              className="hello"
+              multiple
+              id="tags-filled"
+              options={allTags.map((option) => option.name)}
+              freeSolo
+              onChange={(event, value) => setTags(value)}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => <Chip variant="outlined" label={option} {...getTagProps({ index })} />)
+              }
+              renderInput={(params) => <TextField {...params} variant="filled" placeholder="Enter tags" />}
+            />
             <Form.Text>Press enter to add new tag</Form.Text>
           </Form.Group>
           {intFields.map((item, index) => (

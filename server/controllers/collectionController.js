@@ -54,6 +54,7 @@ class CollectionController {
 
   async delete(req, res) {
     const { id } = req.params;
+    const result2 = await Item.destroy({ where: { collectionId: id } });
     const result = await Collection.destroy({ where: { id } });
     return res.status(200).json(result);
   }

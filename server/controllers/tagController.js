@@ -15,6 +15,11 @@ class TagController {
     const tags = await Tag.findAll({ where: { id: tagsId } });
     return res.status(200).json({ tagsCount, tags });
   }
+
+  async getAll(req, res) {
+    const tags = await Tag.findAll();
+    return res.status(200).json(tags);
+  }
 }
 
 module.exports = new TagController();

@@ -44,7 +44,7 @@ const Auth = () => {
 
   return (
     <Container className="container-wrap d-flex justify-content-center align-items-center">
-      <Card className={`bg-${themeBgLight[theme]} auth-card p-5`}>
+      <Card className={`bg-${themeBgLight[theme]} auth-card`}>
         <h2 className="m-auto">{isLogin ? 'Authorization' : 'Registration'}</h2>
         <Form onSubmit={handleSubmit} className="d-flex flex-column">
           {isLogin ? (

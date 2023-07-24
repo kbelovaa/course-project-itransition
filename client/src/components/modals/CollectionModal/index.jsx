@@ -93,6 +93,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
         setBoolFields([data.booleanField1 ?? '', data.booleanField2 ?? '', data.booleanField3 ?? '']);
         setDateFields([data.dateField1 ?? '', data.dateField2 ?? '', data.dateField3 ?? '']);
       });
+      setShowMessage(false);
     }
   }, [collectionId]);
 
@@ -120,6 +121,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
     setTextFields(['', '', '']);
     setBoolFields(['', '', '']);
     setDateFields(['', '', '']);
+    setShowMessage(false);
   };
 
   const handleClose = () => {
@@ -289,7 +291,7 @@ const CollectionModal = ({ show, setShow, collectionId, setEditCollection }) => 
               placeholder="Description..."
               rows={3}
               required
-              style={{whiteSpace: 'break-spaces'}}
+              style={{ whiteSpace: 'break-spaces' }}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="image">

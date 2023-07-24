@@ -1,9 +1,6 @@
-.collection {
-  &-wrap {
-    width: 100%;
-  }
-
+.item {
   &-card {
+    transition: all 0.2s ease-out;
     width: 18%;
     margin: 0.5%;
     margin-bottom: 2vw;
@@ -13,7 +10,23 @@
     }
 
     @media screen and (max-width: 576px) {
-      width: 45%;
+      width: 40%;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &.light {
+      &:hover {
+        box-shadow: 0px 0px 15px 0px #2f2648;
+      }
+    }
+
+    &.dark {
+      &:hover {
+        box-shadow: 0px 0px 15px 0px #0b5ed7;
+      }
     }
   }
 
@@ -27,9 +40,7 @@
     }
   }
 
-  &-name {
-    margin-bottom: 0;
-
+  &-title {
     @media screen and (max-width: 768px) {
       font-size: 1rem;
     }
@@ -39,12 +50,13 @@
     }
   }
 
-  &-number:hover,
-  &-author:hover {
-    cursor: pointer;
-  }
-}
+  &-subtitle {
+    @media screen and (max-width: 768px) {
+      font-size: 0.8rem;
+    }
 
-.list-group-item {
-  border-color: #0000002d;
+    @media screen and (max-width: 576px) {
+      font-size: 0.6rem;
+    }
+  }
 }

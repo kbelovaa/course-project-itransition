@@ -1,0 +1,40 @@
+@import '~bootstrap/scss/_functions.scss';
+@import '~bootstrap/scss/_variables.scss';
+
+body,
+.form-control,
+.page-link,
+.btn,
+.dropdown-item,
+.form-select,
+option,
+.accordion-button {
+  @media screen and (max-width: 992px) {
+    font-size: 0.9rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    font-size: 0.875rem;
+  }
+
+  @media screen and (max-width: 576px) {
+    font-size: 0.65rem;
+  }
+}
+
+.btn,
+.page-link {
+  @media screen and (max-width: 992px) {
+    padding: 0.25rem 0.55rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    padding: 0.15rem 0.4rem;
+  }
+}
+
+.container {
+  @media screen and (max-width: 576px) {
+    max-width: 350px;
+  }
+}

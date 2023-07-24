@@ -1,5 +1,4 @@
 import { SET_USER, SET_IS_AUTH } from '../../constants/actionsRedux';
-import { check } from '../../http/authAPI';
 import { getUser } from '../../http/userAPI';
 
 export const setUserAction = (payload) => ({
@@ -12,8 +11,6 @@ export const setIsAuthAction = (payload) => ({
   payload,
 });
 
-export const setUserAsync = () => (dispatch) => {
-  check()
-    .then((data) => getUser(data.id))
-    .then((data) => dispatch(setUserAction(data)));
+export const setUserAsync = (data) => (dispatch) => {
+  getUser(data.id).then((data) => dispatch(setUserAction(data)));
 };

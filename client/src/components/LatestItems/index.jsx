@@ -37,7 +37,7 @@ const LatestItems = () => {
   return (
     <Container className="d-flex align-items-center flex-column">
       <h2 className={`text-${themeColorLight[theme]} mt-3`}>Last added items</h2>
-      <Table className="item-table mt-3" variant={theme} striped bordered hover>
+      <Table className="items-table mt-3" variant={theme} striped bordered hover>
         <thead>
           <tr>
             <th>Item name</th>
@@ -49,17 +49,17 @@ const LatestItems = () => {
           {items.map((item) => (
             <tr key={item.id}>
               <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 250 }} overlay={renderItemTooltip}>
-                <td className="item-row" onClick={() => navigate(`/item/${item.id}`)}>
+                <td className="items-row" onClick={() => navigate(`/item/${item.id}`)}>
                   {item.name}
                 </td>
               </OverlayTrigger>
               <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 250 }} overlay={renderCollectionTooltip}>
-                <td className="item-row" onClick={() => navigate(`/collection/${item.collectionId}`)}>
+                <td className="items-row" onClick={() => navigate(`/collection/${item.collectionId}`)}>
                   {item.collection.name}
                 </td>
               </OverlayTrigger>
               <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 250 }} overlay={renderAuthorTooltip}>
-                <td className="item-row" onClick={() => navigate(`/profile/${item.collection.userId}`)}>
+                <td className="items-row" onClick={() => navigate(`/profile/${item.collection.userId}`)}>
                   {item.collection.user.name}
                 </td>
               </OverlayTrigger>

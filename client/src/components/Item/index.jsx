@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import { Button, ButtonToolbar, Container, ListGroup, OverlayTrigger, Table, Tooltip } from 'react-bootstrap';
+import { TagsInput } from 'react-tag-input-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faPen, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from '../../hooks/useTheme';
@@ -43,15 +44,13 @@ const Item = () => {
 
   useEffect(() => {
     getItem(itemId).then((data) => {
-      if (data) {
-        setItem(data.item);
-        setTags(data.tags.map((tag) => tag.name));
-        getCollection(data.item.collectionId).then((data) => {
-          setCollection(data);
-          getUser(data.userId).then((data) => setUser(data));
-        });
-        token && getLike(token.id, data.item.id).then((data) => setIsLiked(!!data));
-      }
+      setItem(data.item);
+      setTags(data.tags.map((tag) => tag));
+      getCollection(data.item.collectionId).then((data) => {
+        setCollection(data);
+        getUser(data.userId).then((data) => setUser(data));
+      });
+      token && getLike(token.id, data.item.id).then((data) => setIsLiked(!!data));
     });
   }, [itemId, items]);
 
@@ -89,7 +88,7 @@ const Item = () => {
   return (
     <Container className="container-wrap d-flex align-items-center flex-column">
       <h2 className={`text-${themeColorLight[theme]} m-3`}>{item.name}</h2>
-      <div className="d-flex">
+      <div className="d-flex align-items-start flex-column-reverse flex-md-row">
         <div className="me-3">
           <ListGroup className="item-info">
             <ListGroup.Item variant={themeListGroupVariant[theme]}>
@@ -113,8 +112,8 @@ const Item = () => {
                 <div className="fw-bold">Tags</div>
                 <div className={`bg-${themeBgLight[theme]} rti--container item-tags-wrap`}>
                   {tags.map((tag) => (
-                    <span key={tag} className="rti--tag mt-1">
-                      #{tag}
+                    <span onClick={() => navigate(`/results/${tag.id}`)} key={tag.id} className="rti--tag mt-1">
+                      #{tag.name}
                     </span>
                   ))}
                 </div>
@@ -166,7 +165,9 @@ const Item = () => {
               <tr key={index}>
                 <td>{value[0].toUpperCase() + value.slice(1)}</td>
                 <td>
-                  {item[key] === false
+                  {item[key] === null
+                    ? '—'
+                    : item[key] === false
                     ? 'No'
                     : item[key] === true
                     ? 'Yes'

@@ -15,6 +15,9 @@ export const login = async (email, password) => {
 
 export const check = async () => {
   const { data } = await $authHost.get('auth/auth');
+  if (data.message === 'blocked' || data.message === 'deleted') {
+    return data.message;
+  }
   localStorage.setItem('token', data.token);
   return jwtDecode(data.token);
 };

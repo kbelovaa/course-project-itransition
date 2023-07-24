@@ -1,3 +1,11 @@
 .tags-card {
   width: 60vw;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.tag-cloud-tag:hover {
+  cursor: pointer;
 }

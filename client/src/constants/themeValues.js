@@ -47,3 +47,7 @@ export const themeListGroupVariant = {
   light: 'primary',
   dark: 'dark',
 };
+
+export const themeTagsLight = ['#898bf9', '#5e5e5e', '#0035ff', '#929292', '#278f9f', '#000'];
+
+export const themeTagsDark = ['#b4b4b8', '#b4fffe', '#0035ff', '#e6bfff', '#fff', '#000'];

@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import jwt_decode from 'jwt-decode';
-import { Button, ButtonToolbar, Container, OverlayTrigger, Table, Tooltip } from 'react-bootstrap';
+import {
+  Button,
+  ButtonToolbar,
+  Container,
+  Dropdown,
+  DropdownButton,
+  OverlayTrigger,
+  Table,
+  Tooltip,
+} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faUnlock, faUserXmark, faUserGear, faUser, faImages } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from '../../hooks/useTheme';
@@ -104,7 +113,7 @@ const UsersTable = () => {
 
   return (
     <Container className="container-wrap d-flex align-items-center flex-column">
-      <ButtonToolbar className="users-button-toolbar">
+      <ButtonToolbar className="users-button-toolbar mt-3 d-none d-md-block">
         <Button
           onClick={() => setStatus('blocked')}
           className={`text-${themeColorDark[theme]} m-2`}
@@ -125,6 +134,29 @@ const UsersTable = () => {
           Remove from admins <FontAwesomeIcon icon={faUser} />
         </Button>
       </ButtonToolbar>
+      <DropdownButton
+        id="dropdown-basic-button"
+        title="Actions"
+        className="mt-3 d-md-none users-dropdown"
+        data-bs-theme={theme}
+        variant="secondary"
+      >
+        <Dropdown.Item onClick={() => setStatus('blocked')}>
+          Block <FontAwesomeIcon icon={faLock} />
+        </Dropdown.Item>
+        <Dropdown.Item onClick={() => setStatus('active')}>
+          Unblock <FontAwesomeIcon icon={faUnlock} />
+        </Dropdown.Item>
+        <Dropdown.Item onClick={deleteUser}>
+          Delete <FontAwesomeIcon icon={faUserXmark} />
+        </Dropdown.Item>
+        <Dropdown.Item onClick={() => setRole('ADMIN')}>
+          Add to admins <FontAwesomeIcon icon={faUserGear} />
+        </Dropdown.Item>
+        <Dropdown.Item onClick={() => setRole('USER')}>
+          Remove from admins <FontAwesomeIcon icon={faUser} />
+        </Dropdown.Item>
+      </DropdownButton>
       <Table variant={theme} className="users-table mt-3" striped bordered hover>
         <thead>
           <tr>
@@ -136,7 +168,6 @@ const UsersTable = () => {
                 onChange={(e) => onMasterCheck(e)}
               />
             </th>
-            <th>id</th>
             <th>Name</th>
             <th>e-mail</th>
             <th>Status</th>
@@ -155,7 +186,6 @@ const UsersTable = () => {
                   onChange={(e) => onItemCheck(e, user.id)}
                 />
               </td>
-              <td>{user.id}</td>
               <td>{user.name}</td>
               <td>{user.email}</td>
               <td>{user.status}</td>

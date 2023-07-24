@@ -1,4 +1,4 @@
-const { Item, Tag, ItemTag, Collection, User } = require('../models/models');
+const { Item, Tag, ItemTag, Collection, User, Like, Comment } = require('../models/models');
 const ApiError = require('../error/ApiError');
 
 class ItemController {
@@ -46,9 +46,11 @@ class ItemController {
       tags.forEach((tag) => {
         Tag.findOrCreate({ where: { name: tag } })
           .then(() => Tag.findOne({ where: { name: tag } }))
-          .then((dbTag) => ItemTag.findOrCreate({
-            where: { tagId: dbTag.id, itemId: item.id },
-          }));
+          .then((dbTag) =>
+            ItemTag.findOrCreate({
+              where: { tagId: dbTag.id, itemId: item.id },
+            })
+          );
       });
       return res.status(200).json(item);
     } catch (e) {
@@ -58,6 +60,8 @@ class ItemController {
 
   async delete(req, res) {
     const { id } = req.params;
+    const result1 = await Comment.destroy({ where: { itemId: id } });
+    const result2 = await Like.destroy({ where: { itemId: id } });
     const result = await Item.destroy({ where: { id } });
     return res.status(200).json(result);
   }
@@ -77,6 +81,19 @@ class ItemController {
     const item = await Item.findOne({ where: { id } });
     const tags = await item.getTags({ order: ['id'] });
     return res.status(200).json({ item, tags });
+  }
+
+  async getByTag(req, res) {
+    const { tagId } = req.query;
+    const tag = await Tag.findOne({ where: { id: tagId } });
+    const itemTags = await ItemTag.findAll({ where: { tagId } });
+    const itemsId = itemTags.map((item) => item.itemId);
+    const items = await Item.findAll({
+      include: { model: Collection, include: User },
+      order: [['id', 'DESC']],
+      where: { id: itemsId },
+    });
+    return res.status(200).json({ items, tag });
   }
 
   async edit(req, res) {
